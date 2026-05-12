@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Sky Escape Game</title>
 
@@ -43,7 +43,8 @@ body{
   align-items:center;
   padding:20px;
 
-  background:linear-gradient(
+  background:
+  linear-gradient(
     135deg,
     var(--bg1),
     var(--bg2)
@@ -52,7 +53,7 @@ body{
   font-family:Arial,sans-serif;
 }
 
-/* ================= GAME CONTAINER ================= */
+/* ================= CONTAINER ================= */
 
 .game-wrapper{
 
@@ -356,6 +357,16 @@ button:hover{
 
 </div>
 
+<!-- ================= AUDIO ================= -->
+
+<audio id="bgMusic" loop>
+  <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_c8c8a73467.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="coinSound">
+  <source src="https://cdn.pixabay.com/audio/2022/03/10/audio_270f49b38f.mp3" type="audio/mpeg">
+</audio>
+
 <script>
 
 /* ================= CANVAS ================= */
@@ -365,6 +376,27 @@ document.getElementById("gameCanvas");
 
 let ctx =
 canvas.getContext("2d");
+
+/* ================= AUDIO ================= */
+
+let bgMusic =
+document.getElementById("bgMusic");
+
+let coinSound =
+document.getElementById("coinSound");
+
+/* START MUSIC */
+
+document.body.addEventListener(
+  "click",
+  () => {
+
+    bgMusic.volume = 0.3;
+
+    bgMusic.play();
+  },
+  { once:true }
+);
 
 /* ================= RESPONSIVE ================= */
 
@@ -405,6 +437,8 @@ let coins = [];
 
 let trophies = [];
 
+let particles = [];
+
 let frameNo = 0;
 
 let score = 0;
@@ -413,7 +447,7 @@ let gameInterval;
 
 let gameOver = false;
 
-/* ================= START GAME ================= */
+/* ================= START ================= */
 
 function startGame(){
 
@@ -436,6 +470,8 @@ function startGame(){
 
   trophies = [];
 
+  particles = [];
+
   frameNo = 0;
 
   score = 0;
@@ -448,7 +484,7 @@ function startGame(){
   setInterval(updateGame,20);
 }
 
-/* ================= UPDATE GAME ================= */
+/* ================= UPDATE ================= */
 
 function updateGame(){
 
@@ -465,7 +501,7 @@ function updateGame(){
 
   frameNo++;
 
-  /* ================= CREATE BIRDS ================= */
+  /* CREATE BIRDS */
 
   if(frameNo == 1 || everyInterval(110)){
 
@@ -486,7 +522,7 @@ function updateGame(){
     });
   }
 
-  /* ================= CREATE COINS ================= */
+  /* CREATE COINS */
 
   if(everyInterval(140)){
 
@@ -503,7 +539,7 @@ function updateGame(){
     });
   }
 
-  /* ================= CREATE TROPHIES ================= */
+  /* CREATE TROPHIES */
 
   if(everyInterval(400)){
 
@@ -551,6 +587,15 @@ function updateGame(){
 
       score += 10;
 
+      coinSound.currentTime = 0;
+
+      coinSound.play();
+
+      createCelebration(
+        coin.x,
+        coin.y
+      );
+
       coins.splice(i,1);
 
       i--;
@@ -571,13 +616,22 @@ function updateGame(){
 
       score += 50;
 
+      coinSound.currentTime = 0;
+
+      coinSound.play();
+
+      createCelebration(
+        trophy.x,
+        trophy.y
+      );
+
       trophies.splice(i,1);
 
       i--;
     }
   }
 
-  /* ================= PLAYER PHYSICS ================= */
+  /* ================= PLAYER ================= */
 
   player.gravitySpeed += player.gravity;
 
@@ -598,6 +652,8 @@ function updateGame(){
 
   drawPlayer();
 
+  drawParticles();
+
   document.getElementById(
     "scoreBox"
   ).innerHTML =
@@ -615,7 +671,7 @@ function drawPlayer(){
     player.y
   );
 
-  /* ROCKET BODY */
+  /* BODY */
 
   ctx.fillStyle = "#ff3b30";
 
@@ -649,7 +705,7 @@ function drawPlayer(){
 
   ctx.fill();
 
-  /* BEAM FIRE */
+  /* FIRE */
 
   ctx.fillStyle = "#ffb703";
 
@@ -695,8 +751,6 @@ function drawBird(bird){
     bird.y
   );
 
-  /* BODY */
-
   ctx.fillStyle = "#222";
 
   ctx.beginPath();
@@ -713,8 +767,6 @@ function drawBird(bird){
 
   ctx.fill();
 
-  /* WING */
-
   ctx.fillStyle = "#444";
 
   let flap =
@@ -730,8 +782,6 @@ function drawBird(bird){
 
   ctx.fill();
 
-  /* EYE */
-
   ctx.fillStyle = "white";
 
   ctx.beginPath();
@@ -745,8 +795,6 @@ function drawBird(bird){
   );
 
   ctx.fill();
-
-  /* BEAK */
 
   ctx.fillStyle = "orange";
 
@@ -813,11 +861,70 @@ function drawTrophy(t){
   );
 }
 
+/* ================= PARTICLES ================= */
+
+function createCelebration(x,y){
+
+  for(let i=0;i<20;i++){
+
+    particles.push({
+
+      x:x,
+      y:y,
+
+      size:
+      Math.random() * 6 + 2,
+
+      speedX:
+      (Math.random() - 0.5) * 6,
+
+      speedY:
+      (Math.random() - 0.5) * 6,
+
+      life:50
+    });
+  }
+}
+
+function drawParticles(){
+
+  for(let i=0;i<particles.length;i++){
+
+    let p = particles[i];
+
+    ctx.fillStyle =
+    `hsl(${Math.random()*360},100%,60%)`;
+
+    ctx.beginPath();
+
+    ctx.arc(
+      p.x,
+      p.y,
+      p.size,
+      0,
+      Math.PI * 2
+    );
+
+    ctx.fill();
+
+    p.x += p.speedX;
+
+    p.y += p.speedY;
+
+    p.life--;
+
+    if(p.life <= 0){
+
+      particles.splice(i,1);
+
+      i--;
+    }
+  }
+}
+
 /* ================= BACKGROUND ================= */
 
 function drawBackground(){
-
-  /* CLOUD 1 */
 
   ctx.fillStyle =
   "rgba(255,255,255,0.5)";
@@ -831,8 +938,6 @@ function drawBackground(){
   ctx.arc(145,70,20,0,Math.PI*2);
 
   ctx.fill();
-
-  /* CLOUD 2 */
 
   ctx.beginPath();
 
@@ -916,6 +1021,8 @@ function endGame(){
 
   clearInterval(gameInterval);
 
+  bgMusic.pause();
+
   ctx.fillStyle =
   "rgba(0,0,0,0.5)";
 
@@ -948,6 +1055,8 @@ function endGame(){
 /* ================= RESET ================= */
 
 function resetGame(){
+
+  bgMusic.play();
 
   startGame();
 }
