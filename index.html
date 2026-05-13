@@ -54,7 +54,6 @@ body{
 }
 
 /* ================= CONTAINER ================= */
-
 .game-wrapper{
 
   width:95%;
@@ -82,7 +81,6 @@ body{
 }
 
 /* ================= GLOW ================= */
-
 .glow1,
 .glow2{
   position:absolute;
@@ -110,7 +108,6 @@ body{
 }
 
 /* ================= TITLE ================= */
-
 h1{
   color:var(--text);
   font-size:2.6rem;
@@ -124,7 +121,6 @@ h1{
 }
 
 /* ================= CANVAS ================= */
-
 .canvas-container{
   position:relative;
   width:100%;
@@ -159,7 +155,6 @@ canvas{
 }
 
 /* ================= LOGO OVERLAY ================= */
-
 .logo-overlay{
   position:absolute;
   top:50%;
@@ -170,7 +165,6 @@ canvas{
   opacity:0.04;
   pointer-events:none;
 }
-
 /* ================= BUTTONS ================= */
 
 .controls{
@@ -345,7 +339,7 @@ button:hover{
 </head>
 
 <body>
-<audio src="./File/Audio.mp3" autoplay loop></audio>
+<!-- <audio src="./File/PCHGAMEAUDIO.mp3" autoplay loop></audio> -->
 <div class="game-wrapper">
 
   <div class="glow1"></div>
@@ -384,7 +378,7 @@ button:hover{
   </div>
 
   <div class="info">
-    Use SPACE key or FLY button to control the rocket.<br>
+  PCH Games<br>
     Avoid birds and collect rewards.
   </div>
 
@@ -393,13 +387,16 @@ button:hover{
 <!-- ================= AUDIO ================= -->
 
 <audio id="bgMusic" loop>
-  <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_c8c8a73467.mp3" type="audio/mpeg">
+  <source src="./File/Logo.png" type="audio/mpeg">
 </audio>
 
 <audio id="coinSound">
-  <source src="https://cdn.pixabay.com/audio/2022/03/10/audio_270f49b38f.mp3" type="audio/mpeg">
+  <source src="./File/Coinaudio1.mp3" type="audio/mpeg">
 </audio>
 
+<audio id="gameOver">
+  <source src="./File/GameOver.mp3" type="audio/mpeg">
+</audio>
 <script>
 
 /* ================= CANVAS ================= */
@@ -418,6 +415,9 @@ document.getElementById("bgMusic");
 let coinSound =
 document.getElementById("coinSound");
 
+let gameOverSound =
+document.getElementById("gameOver");
+
 /* START MUSIC */
 
 document.body.addEventListener(
@@ -432,7 +432,6 @@ document.body.addEventListener(
 );
 
 /* ================= RESPONSIVE ================= */
-
 function resizeCanvas(){
 
   let wrapper =
@@ -515,6 +514,9 @@ function startGame(){
 
   gameInterval =
   setInterval(updateGame,20);
+
+  // Start background music when game begins
+  bgMusic.play();
 }
 
 /* ================= UPDATE ================= */
@@ -1055,6 +1057,10 @@ function endGame(){
   clearInterval(gameInterval);
 
   bgMusic.pause();
+  bgMusic.currentTime = 0;
+
+  gameOverSound.currentTime = 0;
+  gameOverSound.play();
 
   ctx.fillStyle =
   "rgba(0,0,0,0.5)";
