@@ -125,6 +125,13 @@ h1{
 
 /* ================= CANVAS ================= */
 
+.canvas-container{
+  position:relative;
+  width:100%;
+  display:inline-block;
+  margin:auto auto 25px;
+}
+
 canvas{
 
   width:100%;
@@ -148,7 +155,20 @@ canvas{
 
   display:block;
 
-  margin:auto auto 25px;
+  width:100%;
+}
+
+/* ================= LOGO OVERLAY ================= */
+
+.logo-overlay{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+  width:260px;
+  height:380px;
+  opacity:0.04;
+  pointer-events:none;
 }
 
 /* ================= BUTTONS ================= */
@@ -321,13 +341,16 @@ button:hover{
   <div class="glow1"></div>
   <div class="glow2"></div>
 
-  <h1>🚀 Sky Escape</h1>
+  <h1>Sky Escape</h1>
 
   <p class="subtitle">
     Collect coins and trophies while escaping dangerous birds
   </p>
 
-  <canvas id="gameCanvas"></canvas>
+  <div class="canvas-container">
+    <canvas id="gameCanvas"></canvas>
+    <img src="File/Logo.png" alt="Logo" class="logo-overlay">
+  </div>
 
   <div class="controls">
 
