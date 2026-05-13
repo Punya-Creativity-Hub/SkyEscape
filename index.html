@@ -387,7 +387,7 @@ button:hover{
 <!-- ================= AUDIO ================= -->
 
 <audio id="bgMusic" loop>
-  <source src="./File/Logo.png" type="audio/mpeg">
+  <source src="./File/PCHGAMEAUDIO.mp3" type="audio/mpeg">
 </audio>
 
 <audio id="coinSound">
@@ -1059,6 +1059,7 @@ function endGame(){
   bgMusic.pause();
   bgMusic.currentTime = 0;
 
+  gameOverSound.volume = 0.3;
   gameOverSound.currentTime = 0;
   gameOverSound.play();
 
